@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REFANS BASE | Official Community</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Poppins:wght@500;700;800&display=swap" rel="stylesheet">
+    <!-- Icon -->
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <style>
+        :root {
+            --primary: #FF8A3D; --secondary: #FFF6EE; --accent: #FFB87A;
+            --dark: #1B1B1B; --text: #2A2A2A; --card-radius: 28px;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: #fff; color: var(--text); overflow-x: hidden; }
+        h1, h2, h3, .poppins { font-family: 'Poppins', sans-serif; }
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .section-padding { padding: 100px 0; }
+        .btn { padding: 14px 32px; border-radius: 50px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; border:none; font-family:'Poppins'; transition: var(--transition); }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 10px 20px -10px #FF8A3D; }
+        .btn-primary:hover { transform: translateY(-5px); box-shadow: 0 15px 30px -10px #FF8A3D; }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+
+        /* Navbar */
+        nav { position: fixed; top: 0; width: 100%; z-index: 1000; transition: var(--transition); padding: 24px 0; }
+        nav.scrolled { background: rgba(255,255,255,0.8); backdrop-filter: blur(10px); padding: 12px 0; border-bottom: 1px solid var(--secondary); }
+        .nav-wrapper { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--primary); letter-spacing: -1px; }
+        .nav-links { display: flex; gap: 32px; font-weight: 600; font-size: 0.95rem; }
+        .nav-links a:hover { color: var(--primary); }
+
+        /* Hero */
+        .hero { min-height: 100vh; display: flex; align-items: center; background: radial-gradient(circle at top right, #FFF6EE, #ffffff); overflow: hidden; padding-top: 100px;}
+        .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+        .hero-badge { display: inline-block; padding: 6px 16px; background: var(--secondary); color: var(--primary); border-radius: 50px; font-weight: 700; font-size: 0.8rem; margin-bottom: 24px; }
+        .hero-title { font-size: clamp(3rem, 6vw, 4.5rem); line-height: 1.1; margin-bottom: 24px; color: var(--dark); }
+        .hero-desc { font-size: 1.1rem; color: #666; line-height: 1.8; margin-bottom: 40px; }
+        .hero-stats { display: flex; gap: 32px; margin-top: 50px; border-top: 1px solid #eee; padding-top: 40px; }
+        .stat-item b { font-size: 1.8rem; display: block; color: var(--dark); font-family: 'Poppins'; }
+        .stat-item span { font-size: 0.8rem; color: #999; font-weight: 600; text-transform: uppercase; }
+
+        /* Showcase Slide */
+        .showcase { position: relative; height: 500px; display: flex; justify-content: center; align-items: center; transform-style: preserve-3d; }
+        .slide { position: absolute; width: 300px; height: 450px; transition: var(--transition); border-radius: var(--card-radius); overflow: hidden; }
+        .slide img { width: 100%; height: 100%; object-fit: contain; }
+        .slide.active { transform: scale(1.1); z-index: 10; opacity: 1; filter: drop-shadow(0 20px 40px rgba(255,138,61,0.2)); }
+        .slide.side { transform: scale(0.85); opacity: 0.4; filter: blur(2px); }
+        .slide.left { transform: translateX(-60%) scale(0.85); }
+        .slide.right { transform: translateX(60%) scale(0.85); }
+
+        /* Gallery */
+        .masonry { column-count: 3; column-gap: 20px; }
+        .gallery-card { break-inside: avoid; margin-bottom: 20px; border-radius: 20px; overflow: hidden; position: relative; border: 1px solid var(--secondary); transition: var(--transition); cursor: pointer; }
+        .gallery-card:hover { transform: translateY(-10px); }
+        .gallery-card img { width: 100%; display: block; }
+        .gallery-overlay { position: absolute; bottom:0; padding: 20px; background: linear-gradient(transparent, rgba(0,0,0,0.7)); width: 100%; color: #fff; opacity:0; transition: var(--transition); }
+        .gallery-card:hover .gallery-overlay { opacity: 1; }
+
+        /* Responsive */
+        @media (max-width: 992px) { .hero-grid { grid-template-columns: 1fr; text-align: center; } .hero-stats { justify-content: center; } .showcase { margin-top: 60px; } .masonry { column-count: 2; } }
+        @media (max-width: 600px) { .nav-links { display: none; } .masonry { column-count: 1; } }
+    </style>
+</head>
+<body>
+
+<nav id="navbar">
+    <div class="container nav-wrapper">
+        <a href="#" class="logo">REFANS BASE</a>
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#gallery">Gallery</a>
+            <a href="#community">Community</a>
+            <a href="#events">Events</a>
+            <a href="#donate">Donate</a>
+        </div>
+        <div class="poppins" style="font-weight: 700; color: #aaa;">•••</div>
+    </div>
+</nav>
+
+<main>
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container hero-grid">
+            <div class="hero-text">
+                <span class="hero-badge">OFFICIAL COMMUNITY</span>
+                <h1 class="hero-title">WELCOME TO <br>REFANSBASE</h1>
+                <p class="hero-desc">Platform kolaboratif pengikut resmi Revano Aditya. Mari tumbuh, berkarya, dan berinteraksi secara eksklusif dalam satu ekosistem kreatif.</p>
+                <div class="hero-btns">
+                    <button class="btn btn-primary">Join Community</button>
+                    <button class="btn btn-outline" style="margin-left: 15px;">Explore More</button>
+                </div>
+                <div class="hero-stats" id="mainStats">
+                    <div class="stat-item"><b id="stat-members">0</b><span>Members</span></div>
+                    <div class="stat-item"><b id="stat-gallery">0</b><span>Artwork</span></div>
+                    <div class="stat-item"><b id="stat-events">0</b><span>Events</span></div>
+                </div>
+            </div>
+            <div class="showcase" id="heroShowcase">
+                <!-- Slides Dynamic -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery -->
+    <section id="gallery" class="section-padding">
+        <div class="container">
+            <h2 class="poppins" style="font-size: 2.5rem; margin-bottom: 50px; text-align: center;">Vibe and Story</h2>
+            <div class="masonry" id="galleryGrid"></div>
+        </div>
+    </section>
+
+    <!-- Donate -->
+    <section id="donate" class="section-padding" style="background: var(--secondary);">
+        <div class="container" style="text-align: center; max-width: 700px;">
+            <h2 class="poppins" style="font-size: 2.2rem; margin-bottom: 20px;">Support REFANS BASE</h2>
+            <p style="margin-bottom: 40px; color: #666;">Bantu kami terus berinovasi dan menyelenggarakan event berkualitas untuk seluruh anggota komunitas.</p>
+            <div style="background: #fff; padding: 30px; border-radius: 30px; display: inline-block; box-shadow: 0 20px 40px rgba(0,0,0,0.05);">
+                <img id="qrDonate" src="" alt="Donate" style="width: 250px; border-radius: 15px;">
+            </div>
+            <br><br>
+            <a href="#" id="saweriaLink" target="_blank" class="btn btn-primary">Via Saweria</a>
+        </div>
+    </section>
+</main>
+
+<script>
+    const API = "https://script.google.com/macros/library/d/1wnnAyUkv_PYj4ZAOmyxUeLT069ow0lDe5o0xMByntE5uXy5lOpB3awsF/3";
+
+    async function loadData() {
+        // Fetch Settings & Stats
+        const stats = await fetch(`${API}?action=getStats`).then(r => r.json());
+        document.getElementById('stat-gallery').innerText = stats.gallery;
+        document.getElementById('stat-events').innerText = stats.events;
+        document.getElementById('stat-members').innerText = "1.2K+";
+
+        // Gallery
+        const gallery = await fetch(`${API}?action=getGallery`).then(r => r.json());
+        const grid = document.getElementById('galleryGrid');
+        grid.innerHTML = gallery.map(item => `
+            <div class="gallery-card">
+                <img src="https://lh3.googleusercontent.com/d/${item.DriveImageID}" alt="${item.Title}">
+                <div class="gallery-overlay">
+                    <p class="poppins"><b>${item.Title}</b></p>
+                    <p style="font-size: 0.8rem;">${item.Category}</p>
+                </div>
+            </div>
+        `).join('');
+
+        // Donate
+        const donate = await fetch(`${API}?action=getDonate`).then(r => r.json());
+        if(donate.length) {
+            document.getElementById('qrDonate').src = `https://lh3.googleusercontent.com/d/${donate[0].QRDriveID}`;
+            document.getElementById('saweriaLink').href = donate[0].SaweriaLink;
+        }
+
+        // Hero Slide Simulation (Ganti dengan file ID asli)
+        const images = ["IMAGE_ID_1", "IMAGE_ID_2", "IMAGE_ID_3"];
+        initHeroShowcase(images);
+    }
+
+    function initHeroShowcase(images) {
+        const wrap = document.getElementById('heroShowcase');
+        let index = 0;
+        const render = () => {
+            const sideL = (index - 1 + images.length) % images.length;
+            const sideR = (index + 1) % images.length;
+            wrap.innerHTML = `
+                <div class="slide side left"><img src="https://lh3.googleusercontent.com/d/${images[sideL]}"></div>
+                <div class="slide active"><img src="https://lh3.googleusercontent.com/d/${images[index]}"></div>
+                <div class="slide side right"><img src="https://lh3.googleusercontent.com/d/${images[sideR]}"></div>
+            `;
+            index = (index + 1) % images.length;
+        }
+        render();
+        setInterval(render, 6000);
+    }
+
+    window.onscroll = () => {
+        document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+    }
+
+    document.addEventListener('DOMContentLoaded', loadData);
+</script>
+</body>
+</html>
