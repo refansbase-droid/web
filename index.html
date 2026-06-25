@@ -803,11 +803,10 @@
                     timestamp: new Date().toISOString() 
                 };
 
-                if (GOOGLE_APPS_SCRIPT_URL && GOOGLE_APPS_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbyfEhlTu-oapwQB1oSWxnb60jmM2Etu3fdv2s3KMSPbQf4czXcUWKhCN3PNHT6haHW2/exec") {
-                    // Menggunakan text/plain untuk menghindari preflight OPTIONS error di Apps Script
+                if (GOOGLE_APPS_SCRIPT_URL && GOOGLE_APPS_SCRIPT_URL !== "URL_WEB_APP_ANDA_DISINI") {
                     fetch(GOOGLE_APPS_SCRIPT_URL, { 
                         method: 'POST', 
-                        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+                        headers: { 'Content-Type': 'application/json' }, 
                         body: JSON.stringify(newMessage) 
                     })
                     .then(response => response.json())
@@ -815,14 +814,14 @@
                         if(data.status === 'success') {
                             successSubmit(nameInput, messageInput); 
                         } else {
-                            throw new Error(data.message || "Gagal menyimpan di server");
+                            throw new Error("Gagal menyimpan di server");
                         }
                     })
                     .catch(err => { 
-                        console.error(err);
-                        saveLocalMessage(newMessage); // Fallback jika gagal fetch
+                        console.error("Error:", err);
+                        saveLocalMessage(newMessage); 
                         successSubmit(nameInput, messageInput);
-                        showToast("Disimpan lokal. Pastikan URL Script benar.", false);
+                        showToast("Terjadi kesalahan, pesan disimpan lokal.", false);
                     });
                 } else {
                     setTimeout(() => { 
