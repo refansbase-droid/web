@@ -277,7 +277,7 @@
     <nav id="navbar">
         <div class="container">
             <div class="nav-container">
-                <a href="#home" class="logo"></i> Revano Aditya<span>.</span></a>
+                <a href="#home" class="logo">Revano Aditya<span>.</span></a>
                 <ul class="nav-links">
                     <li><a href="#home" class="nav-link active">Home</a></li>
                     <li><a href="#about" class="nav-link">Biodata</a></li>
@@ -479,7 +479,6 @@
                     <div class="guestbook-messages-wrap reveal delay-2">
                         <div class="messages-header">
                             <h3 style="font-size: 1.4rem;">Pesan Terbaru</h3>
-                            <!-- Anda bisa menghapus visitor counter ini jika tidak menggunakannya di script -->
                             <div class="visitor-counter-inline" id="visitorCounterCard">
                                 <i class="ph ph-users"></i> <span id="visitorCount">0</span> Pengunjung
                             </div>
@@ -694,7 +693,7 @@
             // INTEGRASI GOOGLE SHEETS
             // PASTE URL GOOGLE APPS SCRIPT WEB APP ANDA DI SINI
             // ==========================================================================
-            const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfEhlTu-oapwQB1oSWxnb60jmM2Etu3fdv2s3KMSPbQf4czXcUWKhCN3PNHT6haHW2/exec"; 
+            const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwcGg-ApLbbxpvOdHXLAk_fhtMnEZ0dHmNya6Q3QtYqP7QO_rw7rpj4BZkYdJWit4mX5A/exec"; 
             
             const guestbookForm = document.getElementById('guestbookForm');
             const messagesList = document.getElementById('messagesList');
@@ -705,6 +704,11 @@
             const btnSubmit = document.getElementById('btnSubmitGuestbook');
             const btnText = document.getElementById('btnText');
             const btnLoader = document.getElementById('btnLoader');
+
+            // Cek apakah URL Web App Google Apps Script valid & sudah disesuaikan
+            const isConfigured = GOOGLE_APPS_SCRIPT_URL && 
+                                 GOOGLE_APPS_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbwcGg-ApLbbxpvOdHXLAk_fhtMnEZ0dHmNya6Q3QtYqP7QO_rw7rpj4BZkYdJWit4mX5A/exec" && 
+                                 GOOGLE_APPS_SCRIPT_URL.startsWith("https://");
 
             function showToast(message, isSuccess = true) {
                 toastMsgEl.textContent = message;
@@ -722,15 +726,17 @@
                 visitorCountEl.textContent = Number(localCount).toLocaleString('id-ID');
             }
 
-            // Fungsi untuk Mengambil data dari Google Sheets
+            // Memuat pesan dari database
             function loadMessages() {
-                if (GOOGLE_APPS_SCRIPT_URL && GOOGLE_APPS_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbyfEhlTu-oapwQB1oSWxnb60jmM2Etu3fdv2s3KMSPbQf4czXcUWKhCN3PNHT6haHW2/exec") {
+                if (isConfigured) {
                     fetch(GOOGLE_APPS_SCRIPT_URL + "?type=messages")
                         .then(response => {
-                            if(!response.ok) throw new Error("Gagal mengambil data");
+                            if(!response.ok) throw new Error("Gagal mengambil data dari Google Sheets");
                             return response.json();
                         })
-                        .then(data => { renderMessages(data); })
+                        .then(data => { 
+                            renderMessages(data); 
+                        })
                         .catch(err => { 
                             console.error("Error fetching messages:", err);
                             renderMessages(getLocalMessages()); 
@@ -743,10 +749,9 @@
             function getLocalMessages() {
                 const localData = localStorage.getItem('revano-guestbook-messages');
                 if (!localData) {
-                    const sampleMessages = [
-                        { name: "Sistem", message: "Hubungkan dengan Google Sheets untuk melihat pesan langsung di sini!", timestamp: new Date().toISOString() }
+                    return [
+                        { name: "Sistem", message: "Hubungkan website ini dengan URL Google Apps Script Anda untuk menikmati sinkronisasi database live!", timestamp: new Date().toISOString() }
                     ];
-                    return sampleMessages;
                 }
                 return JSON.parse(localData);
             }
@@ -757,18 +762,17 @@
                     messagesList.innerHTML = `
                         <div style="text-align: center; color: var(--text-muted); padding: 30px; font-size: 0.95rem;">
                             <i class="ph ph-note-blank" style="font-size: 2rem; color: var(--primary); margin-bottom: 8px; display: block;"></i>
-                            Belum ada pesan. Jadilah yang pertama mengirimkan kesan!
+                            Belum ada pesan. Jadilah yang pertama mengirimkan pesan!
                         </div>
                     `;
                     return;
                 }
                 
-                // Urutkan dari yang terbaru
+                // Urutkan pesan dari yang paling baru
                 messages.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
                 messages.forEach(msg => {
                     const dateObj = new Date(msg.timestamp);
-                    // Validasi tanggal
                     const dateFormatted = isNaN(dateObj.getTime()) ? msg.timestamp : dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
                     
                     const messageCard = document.createElement('div');
@@ -784,7 +788,7 @@
                 });
             }
 
-            // Fungsi Mengirim Data ke Google Sheets
+            // Mengirim data ke Google Sheets atau Database Lokal
             guestbookForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const nameInput = document.getElementById('guestName');
@@ -793,7 +797,8 @@
                 const messageValue = messageInput.value.trim();
 
                 if (!nameValue || !messageValue) {
-                    showToast("Nama dan pesan tidak boleh kosong!", false); return;
+                    showToast("Nama dan pesan wajib diisi!", false); 
+                    return;
                 }
 
                 setLoadingState(true);
@@ -803,10 +808,11 @@
                     timestamp: new Date().toISOString() 
                 };
 
-                if (GOOGLE_APPS_SCRIPT_URL && GOOGLE_APPS_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbyfEhlTu-oapwQB1oSWxnb60jmM2Etu3fdv2s3KMSPbQf4czXcUWKhCN3PNHT6haHW2/exec") {
+                if (isConfigured) {
                     fetch(GOOGLE_APPS_SCRIPT_URL, { 
                         method: 'POST', 
-                        headers: { 'Content-Type': 'application/json' }, 
+                        mode: 'cors',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
                         body: JSON.stringify(newMessage) 
                     })
                     .then(response => response.json())
@@ -814,16 +820,17 @@
                         if(data.status === 'success') {
                             successSubmit(nameInput, messageInput); 
                         } else {
-                            throw new Error("Gagal menyimpan di server");
+                            throw new Error(data.message || "Gagal menyimpan di Google Sheets");
                         }
                     })
                     .catch(err => { 
-                        console.error("Error:", err);
-                        saveLocalMessage(newMessage); 
+                        console.error("Gagal mengirim:", err);
+                        saveLocalMessage(newMessage);
                         successSubmit(nameInput, messageInput);
-                        showToast("Terjadi kesalahan, pesan disimpan lokal.", false);
+                        showToast("Koneksi gagal. Pesan disimpan lokal sementara waktu.", false);
                     });
                 } else {
+                    // Fallback penyimpanan offline lokal
                     setTimeout(() => { 
                         saveLocalMessage(newMessage); 
                         successSubmit(nameInput, messageInput); 
@@ -833,24 +840,29 @@
 
             function saveLocalMessage(msg) {
                 const messages = getLocalMessages(); 
-                // Hapus pesan dummy sistem jika ada
+                // Hapus pesan pemberitahuan sistem default jika ada
                 const filtered = messages.filter(m => m.name !== "Sistem");
                 filtered.push(msg);
                 localStorage.setItem('revano-guestbook-messages', JSON.stringify(filtered));
             }
 
             function successSubmit(nameField, messageField) {
-                nameField.value = ''; messageField.value = '';
-                loadMessages(); // Muat ulang pesan dari server/lokal agar UI langsung update
+                nameField.value = ''; 
+                messageField.value = '';
+                loadMessages(); 
                 setLoadingState(false);
                 showToast("Pesan Anda berhasil dikirim!");
             }
 
             function setLoadingState(isLoading) {
                 if (isLoading) {
-                    btnSubmit.disabled = true; btnText.textContent = "Mengirim..."; btnLoader.classList.remove('hidden');
+                    btnSubmit.disabled = true; 
+                    btnText.textContent = "Mengirim..."; 
+                    btnLoader.classList.remove('hidden');
                 } else {
-                    btnSubmit.disabled = false; btnText.textContent = "Kirim Pesan"; btnLoader.classList.add('hidden');
+                    btnSubmit.disabled = false; 
+                    btnText.textContent = "Kirim Pesan"; 
+                    btnLoader.classList.add('hidden');
                 }
             }
 
@@ -874,7 +886,7 @@
                 if (keyBuffer.length > 15) keyBuffer = keyBuffer.substring(keyBuffer.length - 15);
 
                 if (keyBuffer.endsWith("revano")) {
-                    triggerEasterEgg("Halo, Petualang!", "Selamat! Kamu baru saja menemukan Easter Egg tersembunyi. Terima kasih sudah mampir!");
+                    triggerEasterEgg("Halo, Petualang!", "Selamat! Anda baru saja menemukan kode rahasia tersembunyi. Terima kasih sudah mampir!");
                     keyBuffer = ""; 
                 } else if (keyBuffer.endsWith("ggwp")) {
                     triggerEasterEgg("GGWP (Good Game Well Played)!", "Sebagai sesama pencinta dunia gaming, ini adalah salam hangat dari saya! Teruslah berjuang.");
