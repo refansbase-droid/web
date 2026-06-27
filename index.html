@@ -36,7 +36,7 @@
             --bg-color: #050505;
             --text-main: #F5F5F7;
             --text-muted: #A1A1A6;
-            --glass-bg: rgba(30, 30, 32, 0.4);
+            --glass-bg: rgba(30, 30, 32, 0.45);
             --glass-border: rgba(255, 255, 255, 0.08);
             --card-hover: rgba(45, 45, 48, 0.6);
             --shadow-soft: 0 10px 40px rgba(0, 0, 0, 0.5);
@@ -49,7 +49,7 @@
             --bg-color: #F5F5F7;
             --text-main: #1D1D1F;
             --text-muted: #86868B;
-            --glass-bg: rgba(255, 255, 255, 0.6);
+            --glass-bg: rgba(255, 255, 255, 0.65);
             --glass-border: rgba(0, 0, 0, 0.05);
             --card-hover: rgba(255, 255, 255, 0.9);
             --shadow-soft: 0 10px 40px rgba(0, 0, 0, 0.06);
@@ -105,7 +105,7 @@
         .sidebar-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.65); /* Diganti ke warna gelap solid untuk stabilitas visual di mobile */
+            background: rgba(0, 0, 0, 0.65); /* Warna gelap solid untuk memfokuskan pandangan pada sidebar */
             z-index: 1001;
             opacity: 0;
             visibility: hidden;
@@ -322,7 +322,9 @@
                 right: -100%; /* Sembunyi di luar layar kanan */
                 width: 280px;
                 height: 100vh;
-                background: var(--bg-color);
+                background: var(--glass-bg); /* Diubah ke glass-bg transparan agar tidak hitam pekat */
+                backdrop-filter: blur(25px); /* Menambahkan efek frosted glass yang modern */
+                -webkit-backdrop-filter: blur(25px);
                 border-left: 1px solid var(--glass-border);
                 box-shadow: -10px 0 40px rgba(0, 0, 0, 0.4);
                 display: flex;
