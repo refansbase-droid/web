@@ -101,6 +101,23 @@
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px var(--primary-glow); }
         .mobile-menu-btn { display: none; background: none; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer; }
 
+        /* Sidebar Overlay */
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+        .sidebar-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
         section { min-height: 100vh; padding: 120px 0 60px; display: flex; flex-direction: column; justify-content: center; }
         #home { position: relative; text-align: center; overflow: hidden; padding-top: 150px; }
         .aurora-bg { position: absolute; inset: 0; overflow: hidden; z-index: 0; pointer-events: none; }
@@ -258,11 +275,132 @@
 
         footer { padding: 30px 0; text-align: center; border-top: 1px solid var(--glass-border); margin-top: 50px; }
         footer p { color: var(--text-muted); font-size: 0.9rem; }
+
+        /* ==========================================
+           RESPONSIVE VIEWPORT BREAKPOINTS (TAB & MOBILE)
+           ========================================== */
+
+        /* 1. Tablet View (max-width: 1024px) */
+        @media (max-width: 1024px) {
+            .container { padding: 0 6%; }
+            .section-title { font-size: 2.2rem; }
+            .biodata-layout { gap: 24px; }
+            .passion-card { padding: 20px; }
+            .slider-container { max-width: 100%; }
+            .guestbook-grid { gap: 24px; }
+        }
+
+        /* 2. Mobile View & Sidebar Implementation (max-width: 992px) */
+        @media (max-width: 992px) {
+            .mobile-menu-btn { 
+                display: flex; 
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: var(--glass-bg);
+                border: 1px solid var(--glass-border);
+                z-index: 1002;
+                transition: var(--transition-smooth);
+            }
+            .mobile-menu-btn:hover, .mobile-menu-btn.active {
+                background: var(--primary);
+                color: #fff;
+                border-color: var(--primary);
+            }
+
+            /* Transformasi Nav Menu menjadi Sidebar */
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%; /* Sembunyi di luar layar kanan */
+                width: 280px;
+                height: 100vh;
+                background: var(--bg-color);
+                border-left: 1px solid var(--glass-border);
+                box-shadow: -10px 0 40px rgba(0, 0, 0, 0.4);
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: flex-start;
+                padding: 100px 40px;
+                gap: 28px;
+                z-index: 1001;
+                transition: right 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            }
+            .nav-links.mobile-active {
+                right: 0; /* Sidebar meluncur masuk */
+            }
+            .nav-links a {
+                font-size: 1.15rem;
+                font-weight: 600;
+                width: 100%;
+            }
+            .nav-links a::after {
+                bottom: -5px;
+                left: 0;
+                transform: none;
+            }
+            .nav-links a:hover::after, .nav-links a.active::after {
+                width: 40px;
+            }
+        }
+
+        /* 3. Small Mobile View (max-width: 768px) */
+        @media (max-width: 768px) {
+            section { padding: 90px 0 45px; }
+            .section-title { font-size: 1.9rem; }
+            .portfolio-header { flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 25px; }
+            
+            .hero-name { font-size: clamp(2.5rem, 9vw, 4rem); }
+            .hero-typing-wrap { font-size: 1.25rem; margin-bottom: 20px; }
+            
+            .profile-main-card { border-radius: 24px; }
+            .profile-cover { height: 120px; }
+            .profile-content-wrap { padding: 0 24px 24px 24px; margin-top: -50px; }
+            .profile-avatar-container { width: 100px; height: 100px; margin-bottom: 15px; }
+            .profile-name { font-size: 1.75rem; }
+            .profile-desc { font-size: 0.95rem; text-align: left; }
+
+            .passion-card { padding: 18px; border-radius: 18px; gap: 15px; }
+            .passion-icon { width: 50px; height: 50px; min-width: 50px; font-size: 1.6rem; border-radius: 14px; }
+            .passion-info h4 { font-size: 1.15rem; }
+            .passion-info p { font-size: 0.85rem; }
+
+            .project-card { height: 320px; }
+            .project-overlay { padding: 25px; }
+            .project-title { font-size: 1.6rem; }
+            
+            .guestbook-form-wrap, .guestbook-messages-wrap { padding: 24px; border-radius: 20px; }
+            .guestbook-form-wrap h3, .messages-header h3 { font-size: 1.3rem; }
+            .message-card { padding: 16px; border-radius: 14px; }
+            
+            .donate-card-premium { padding: 40px 24px; border-radius: 24px; }
+            .donate-badge-icon { width: 64px; height: 64px; font-size: 2rem; }
+            .donate-title { font-size: 1.8rem; }
+            .donate-desc { font-size: 0.95rem; }
+            .support-tag { padding: 6px 14px; font-size: 0.8rem; }
+            .btn-saweria { padding: 14px 28px; font-size: 0.95rem; }
+        }
+
+        /* 4. Extra Small Mobile View (max-width: 576px) */
+        @media (max-width: 576px) {
+            .nav-actions .btn-primary {
+                display: none; /* Sembunyikan tombol CTA di navbar pada layar sangat kecil */
+            }
+            .nav-container { padding: 8px 16px; }
+            .nav-links { width: 100%; } /* Sidebar menutupi layar penuh */
+            .contact-card { min-height: 250px; padding: 30px 20px; }
+        }
     </style>
 </head>
 <body>
     <div class="custom-cursor-outline" id="cursorOutline"></div>
     <div class="custom-cursor-dot" id="cursorDot"></div>
+
+    <!-- Sidebar Backdrop Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="glow-container">
         <div class="orb orb-1"></div>
@@ -460,7 +598,7 @@
                 <div class="guestbook-grid">
                     <div class="guestbook-form-wrap reveal delay-1">
                         <h3 class="text-gradient" style="font-size: 1.4rem; margin-bottom: 10px;">Tulis Pesan</h3>
-                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 25px;">Pesan yang Anda kirim akan langsung muncul di panel sebelah kanan.</p>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 25px;">Pesan yang Anda kirim akan langsung dikirim ke database Spreadsheet.</p>
                         
                         <form id="guestbookForm">
                             <div class="input-group">
@@ -592,26 +730,40 @@
             }, revealOptions);
             revealElements.forEach(el => revealObserver.observe(el));
 
+            /* Sidebar logic untuk Mobile & Tablet */
             const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
             const navLinksContainer = document.querySelector('.nav-links');
             const navLinks = document.querySelectorAll('.nav-link');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
 
-            mobileMenuBtn.addEventListener('click', () => {
-                navLinksContainer.classList.toggle('mobile-active');
-                if(navLinksContainer.classList.contains('mobile-active')) {
+            function toggleSidebar(isOpen) {
+                if(isOpen) {
+                    navLinksContainer.classList.add('mobile-active');
+                    sidebarOverlay.classList.add('show');
                     mobileMenuBtn.innerHTML = '<i class="ph ph-x"></i>';
                     mobileMenuBtn.classList.add('active');
+                    document.body.style.overflow = 'hidden'; /* Cegah scroll latar belakang saat aktif */
                 } else {
+                    navLinksContainer.classList.remove('mobile-active');
+                    sidebarOverlay.classList.remove('show');
                     mobileMenuBtn.innerHTML = '<i class="ph ph-dots-three-vertical"></i>';
                     mobileMenuBtn.classList.remove('active');
+                    document.body.style.overflow = '';
                 }
+            }
+
+            mobileMenuBtn.addEventListener('click', () => {
+                const isOpen = navLinksContainer.classList.contains('mobile-active');
+                toggleSidebar(!isOpen);
+            });
+
+            sidebarOverlay.addEventListener('click', () => {
+                toggleSidebar(false);
             });
 
             navLinks.forEach(link => {
                 link.addEventListener('click', () => {
-                    navLinksContainer.classList.remove('mobile-active');
-                    mobileMenuBtn.innerHTML = '<i class="ph ph-dots-three-vertical"></i>';
-                    mobileMenuBtn.classList.remove('active');
+                    toggleSidebar(false);
                 });
             });
 
@@ -690,8 +842,8 @@
             });
 
             // ==========================================================================
-            // INTEGRASI GOOGLE SHEETS
-            // PASTE URL GOOGLE APPS SCRIPT WEB APP ANDA DI SINI
+            // INTEGRASI GOOGLE SPREADSHEET (DIJAMIN BEBAS CORS)
+            // MASUKKAN URL GOOGLE APPS SCRIPT WEB APP ANDA DI SINI
             // ==========================================================================
             const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwcGg-ApLbbxpvOdHXLAk_fhtMnEZ0dHmNya6Q3QtYqP7QO_rw7rpj4BZkYdJWit4mX5A/exec"; 
             
@@ -705,7 +857,6 @@
             const btnText = document.getElementById('btnText');
             const btnLoader = document.getElementById('btnLoader');
 
-            // Cek apakah URL Web App Google Apps Script valid & sudah disesuaikan
             const isConfigured = GOOGLE_APPS_SCRIPT_URL && 
                                  GOOGLE_APPS_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbwcGg-ApLbbxpvOdHXLAk_fhtMnEZ0dHmNya6Q3QtYqP7QO_rw7rpj4BZkYdJWit4mX5A/exec" && 
                                  GOOGLE_APPS_SCRIPT_URL.startsWith("https://script.google.com/macros/s/AKfycbwcGg-ApLbbxpvOdHXLAk_fhtMnEZ0dHmNya6Q3QtYqP7QO_rw7rpj4BZkYdJWit4mX5A/exec");
@@ -726,34 +877,34 @@
                 visitorCountEl.textContent = Number(localCount).toLocaleString('id-ID');
             }
 
-            // Memuat pesan dari database
+            // Mengambil data murni dari database Google Spreadsheet
             function loadMessages() {
                 if (isConfigured) {
-                    fetch(GOOGLE_APPS_SCRIPT_URL + "?type=messages")
+                    fetch(GOOGLE_APPS_SCRIPT_URL)
                         .then(response => {
-                            if(!response.ok) throw new Error("Gagal mengambil data dari Google Sheets");
+                            if(!response.ok) throw new Error("Gagal terhubung ke server");
                             return response.json();
                         })
                         .then(data => { 
                             renderMessages(data); 
                         })
                         .catch(err => { 
-                            console.error("Error fetching messages:", err);
-                            renderMessages(getLocalMessages()); 
+                            console.error("Gagal memuat pesan:", err);
+                            renderErrorState("Koneksi gagal atau URL Web App salah.");
                         });
                 } else { 
-                    renderMessages(getLocalMessages()); 
+                    renderErrorState("URL Google Apps Script belum dikonfigurasi.");
                 }
             }
 
-            function getLocalMessages() {
-                const localData = localStorage.getItem('revano-guestbook-messages');
-                if (!localData) {
-                    return [
-                        { name: "Sistem", message: "Hubungkan website ini dengan URL Google Apps Script Anda untuk menikmati sinkronisasi database live!", timestamp: new Date().toISOString() }
-                    ];
-                }
-                return JSON.parse(localData);
+            function renderErrorState(customText) {
+                messagesList.innerHTML = `
+                    <div style="text-align: center; color: var(--text-muted); padding: 30px; font-size: 0.95rem;">
+                        <i class="ph ph-warning-circle" style="font-size: 2.2rem; color: #ff3b30; margin-bottom: 8px; display: block;"></i>
+                        ${customText}<br>
+                        <span style="font-size: 0.8rem; opacity: 0.7;">Pastikan Anda sudah mengisi variabel GOOGLE_APPS_SCRIPT_URL dengan benar.</span>
+                    </div>
+                `;
             }
 
             function renderMessages(messages) {
@@ -762,7 +913,7 @@
                     messagesList.innerHTML = `
                         <div style="text-align: center; color: var(--text-muted); padding: 30px; font-size: 0.95rem;">
                             <i class="ph ph-note-blank" style="font-size: 2rem; color: var(--primary); margin-bottom: 8px; display: block;"></i>
-                            Belum ada pesan. Jadilah yang pertama mengirimkan pesan!
+                            Database kosong. Jadilah orang pertama yang mengirimkan sapaan!
                         </div>
                     `;
                     return;
@@ -788,7 +939,7 @@
                 });
             }
 
-            // Mengirim data ke Google Sheets atau Database Lokal
+            // Pengiriman murni ke database Google Spreadsheet menggunakan Single GET request (Bebas Preflight CORS)
             guestbookForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const nameInput = document.getElementById('guestName');
@@ -801,58 +952,38 @@
                     return;
                 }
 
-                setLoadingState(true);
-                const newMessage = { 
-                    name: nameValue, 
-                    message: messageValue, 
-                    timestamp: new Date().toISOString() 
-                };
+                if (!isConfigured) {
+                    showToast("Sistem belum dikonfigurasi dengan Spreadsheet!", false);
+                    return;
+                }
 
-                if (isConfigured) {
-                    fetch(GOOGLE_APPS_SCRIPT_URL, { 
-                        method: 'POST', 
-                        mode: 'cors',
-                        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
-                        body: JSON.stringify(newMessage) 
+                setLoadingState(true);
+
+                // Mengirim payload parameter langsung melalui GET URL Query
+                const submitUrl = `${GOOGLE_APPS_SCRIPT_URL}?action=add&name=${encodeURIComponent(nameValue)}&message=${encodeURIComponent(messageValue)}`;
+
+                fetch(submitUrl)
+                    .then(response => {
+                        if (!response.ok) throw new Error("Gagal menyimpan ke server");
+                        return response.json();
                     })
-                    .then(response => response.json())
-                    .then(data => { 
-                        if(data.status === 'success') {
-                            successSubmit(nameInput, messageInput); 
+                    .then(data => {
+                        if (data.status === 'success') {
+                            nameInput.value = ''; 
+                            messageInput.value = '';
+                            showToast("Pesan Anda berhasil dikirim ke Spreadsheet!");
+                            loadMessages(); // Muat ulang daftar pesan langsung dari Spreadsheet
+                            setLoadingState(false);
                         } else {
-                            throw new Error(data.message || "Gagal menyimpan di Google Sheets");
+                            throw new Error(data.message || "Gagal menyimpan");
                         }
                     })
-                    .catch(err => { 
-                        console.error("Gagal mengirim:", err);
-                        saveLocalMessage(newMessage);
-                        successSubmit(nameInput, messageInput);
-                        showToast("Koneksi gagal. Pesan disimpan lokal sementara waktu.", false);
+                    .catch(err => {
+                        console.error(err);
+                        showToast("Koneksi gagal. Pesan tidak terkirim.", false);
+                        setLoadingState(false);
                     });
-                } else {
-                    // Fallback penyimpanan offline lokal
-                    setTimeout(() => { 
-                        saveLocalMessage(newMessage); 
-                        successSubmit(nameInput, messageInput); 
-                    }, 800);
-                }
             });
-
-            function saveLocalMessage(msg) {
-                const messages = getLocalMessages(); 
-                // Hapus pesan pemberitahuan sistem default jika ada
-                const filtered = messages.filter(m => m.name !== "Sistem");
-                filtered.push(msg);
-                localStorage.setItem('revano-guestbook-messages', JSON.stringify(filtered));
-            }
-
-            function successSubmit(nameField, messageField) {
-                nameField.value = ''; 
-                messageField.value = '';
-                loadMessages(); 
-                setLoadingState(false);
-                showToast("Pesan Anda berhasil dikirim!");
-            }
 
             function setLoadingState(isLoading) {
                 if (isLoading) {
