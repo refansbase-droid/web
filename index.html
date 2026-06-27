@@ -116,8 +116,15 @@
             visibility: visible;
         }
 
-        section { min-height: 100vh; padding: 120px 0 60px; display: flex; flex-direction: column; justify-content: center; }
-        #home { position: relative; text-align: center; overflow: hidden; padding-top: 150px; }
+        section { 
+            min-height: 100vh; 
+            padding: 120px 0 60px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            scroll-margin-top: 80px; /* Jarak aman agar bagian atas section tidak terhalang navbar saat bergulir */
+        }
+        #home { position: relative; text-align: center; overflow: hidden; padding-top: 150px; scroll-margin-top: 0; }
         .aurora-bg { position: absolute; inset: 0; overflow: hidden; z-index: 0; pointer-events: none; }
         .aurora-blob { position: absolute; border-radius: 50%; filter: blur(130px); will-change: transform; }
         [data-theme="dark"] .aurora-blob-1 { background: radial-gradient(circle, rgba(255, 107, 0, 0.26) 0%, transparent 70%); width: 650px; height: 650px; top: -150px; left: -100px; animation: aurora-float-1 25s infinite alternate ease-in-out; }
@@ -322,8 +329,8 @@
                 flex-direction: column;
                 justify-content: center;
                 align-items: flex-start;
-                padding: 100px 40px;
-                gap: 28px;
+                padding: 100px 30px;
+                gap: 16px;
                 z-index: 1001;
                 transition: right 0.5s cubic-bezier(0.25, 1, 0.5, 1);
 
@@ -336,24 +343,37 @@
             .nav-links.mobile-active {
                 right: 0; /* Sidebar meluncur masuk */
             }
+            .nav-links li {
+                width: 100%;
+            }
             .nav-links a {
                 font-size: 1.15rem;
                 font-weight: 600;
                 width: 100%;
+                display: flex;
+                align-items: center;
+                padding: 10px 16px;
+                border-radius: 12px;
+                box-sizing: border-box;
+                border-left: 4px solid transparent;
+                transition: var(--transition-smooth);
+            }
+            /* Menampilkan visual aktif khusus sidebar di perangkat mobile */
+            .nav-links a.active {
+                color: var(--primary);
+                background: rgba(255, 107, 0, 0.08);
+                border-left-color: var(--primary);
+                padding-left: 20px;
+                text-shadow: none;
             }
             .nav-links a::after {
-                bottom: -5px;
-                left: 0;
-                transform: none;
-            }
-            .nav-links a:hover::after, .nav-links a.active::after {
-                width: 40px;
+                display: none; /* Matikan animasi garis bawah bawaan versi desktop */
             }
         }
 
         /* 3. Small Mobile View (max-width: 768px) */
         @media (max-width: 768px) {
-            section { padding: 90px 0 45px; }
+            section { padding: 90px 0 45px; scroll-margin-top: 65px; }
             .section-title { font-size: 1.9rem; }
             .portfolio-header { flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 25px; }
             
@@ -771,19 +791,30 @@
                 });
             });
 
+            // Menyinkronkan active menu saat menggulir halaman (presisi tinggi)
             const sections = document.querySelectorAll('section');
             window.addEventListener('scroll', () => {
                 let current = '';
+                const scrollPos = window.scrollY + 160; // Offset yang disesuaikan dengan posisi header
+
                 sections.forEach(section => {
                     const sectionTop = section.offsetTop;
                     const sectionHeight = section.clientHeight;
-                    if (window.scrollY >= (sectionTop - sectionHeight / 3)) {
+                    if (scrollPos >= sectionTop && scrollPos < (sectionTop + sectionHeight)) {
                         current = section.getAttribute('id');
                     }
                 });
+
+                // Setel paksa ke 'home' jika berada di paling atas halaman
+                if (window.scrollY < 120) {
+                    current = 'home';
+                }
+
                 navLinks.forEach(link => {
                     link.classList.remove('active');
-                    if (link.getAttribute('href') === `#${current}`) { link.classList.add('active'); }
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('active');
+                    }
                 });
             });
 
